@@ -21,6 +21,9 @@
   header { background: var(--charcoal); padding: 28px 48px; display: flex; align-items: baseline; gap: 16px; }
   header h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--cream); letter-spacing: 0.02em; }
   header span { font-size: 0.75rem; color: var(--terra); letter-spacing: 0.15em; text-transform: uppercase; }
+  .api-input-wrap input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--light-gray); border-radius: 3px; background: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--charcoal); outline: none; transition: border-color 0.2s; }
+  .api-input-wrap input:focus { border-color: var(--terra); }
+  .api-input-wrap input::placeholder { color: var(--light-gray); }
   main { max-width: 1100px; margin: 0 auto; padding: 56px 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
   .left-panel { display: flex; flex-direction: column; gap: 24px; }
   .section-label { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--terra); margin-bottom: 10px; }
@@ -75,11 +78,21 @@
 
 <header>
   <h1>空间改造顾问</h1>
-  <span>AI Interior Advisor · 无需 API Key</span>
+  <span>AI Interior Advisor</span>
 </header>
 
 <main>
   <div class="left-panel">
+
+    <div>
+      <div class="section-label">Claude API Key</div>
+      <div class="api-input-wrap">
+        <input type="password" id="api-key" placeholder="sk-ant-api03-..." />
+      </div>
+      <small style="color:var(--light-gray);font-size:0.72rem;margin-top:6px;display:block;">
+        前往 <a href="https://console.anthropic.com" target="_blank" style="color:var(--terra);">console.anthropic.com</a> 免费注册获取 · 仅在你的浏览器中使用
+      </small>
+    </div>
 
     <div>
       <div class="section-label">上传房间照片</div>
@@ -224,6 +237,11 @@
   document.getElementById('analyze-btn').addEventListener('click', analyze);
 
   async function analyze() {
+    const apiKey = document.getElementById('api-key').value.trim();
+    if (!apiKey) {
+      showError('请先填写你的 Claude API Key');
+      return;
+    }
     hideError();
     setLoading(true);
 
@@ -254,6 +272,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-api-key': apiKey,
           'anthropic-version': '2023-06-01',
           'anthropic-dangerous-direct-browser-access': 'true'
         },
@@ -338,6 +357,10 @@
   function hideError() {
     document.getElementById('error-msg').style.display = 'none';
   }
+</script>
+</body>
+</html>
+
 </script>
 </body>
 </html>
